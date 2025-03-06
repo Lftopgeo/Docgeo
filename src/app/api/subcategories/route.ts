@@ -1,0 +1,24 @@
+import { createClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest) {
+  const supabase = createClient();
+  const { data: sessionData } = await supabase.auth.getSession();
+
+  if (!sessionData.session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = await req.json();
+
+  const { data, error } = await supabase
+    .from("document_subcategories")
+    .insert(body)
+    .select();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json(data[0]);
+}

@@ -1,0 +1,85 @@
+:root {
+  /* Light theme colors */
+  --background-light: #fafafa;
+  --card-light: #ffffff;
+  --text-primary-light: #212121;
+  --text-secondary-light: #757575;
+  --border-light: #b0bec5;
+  --primary-light: #ff6b00;
+  --primary-hover-light: #ff8c3f;
+
+  /* Status colors - light theme */
+  --status-active-light: #4caf50;
+  --status-in-progress-light: #ffc107;
+  --status-blocked-light: #e57373;
+  --status-todo-light: #64b5f6;
+
+  /* Priority colors - light theme */
+  --priority-low-light: #66bb6a;
+  --priority-medium-light: #64b5f6;
+  --priority-high-light: #ff8c00;
+  --priority-urgent-light: #f44336;
+
+  /* Dark theme colors */
+  --background-dark: #000000;
+  --card-dark: #0f172a;
+  --text-primary-dark: #ffffff;
+  --text-secondary-dark: #a0aec0;
+  --border-dark: #1e3a8a; /* blue-700 */
+  --primary-dark: #ff6b00;
+  --primary-hover-dark: #ff8c3f;
+
+  /* Status colors - dark theme */
+  --status-active-dark: #4caf50;
+  --status-in-progress-dark: #ffc107;
+  --status-blocked-dark: #e57373;
+  --status-todo-dark: #64b5f6;
+
+  /* Priority colors - dark theme */
+  --priority-low-dark: #66bb6a;
+  --priority-medium-dark: #64b5f6;
+  --priority-high-dark: #ff8c00;
+  --priority-urgent-dark: #f44336;
+}
+
+/* Light theme class */
+.light-theme {
+  --background: var(--background-light);
+  --card-bg: var(--card-light);
+  --text-primary: var(--text-primary-light);
+  --text-secondary: var(--text-secondary-light);
+  --border: var(--border-light);
+  --primary: var(--primary-light);
+  --primary-hover: var(--primary-hover-light);
+
+  --status-active: var(--status-active-light);
+  --status-in-progress: var(--status-in-progress-light);
+  --status-blocked: var(--status-blocked-light);
+  --status-todo: var(--status-todo-light);
+
+  --priority-low: var(--priority-low-light);
+  --priority-medium: var(--priority-medium-light);
+  --priority-high: var(--priority-high-light);
+  --priority-urgent: var(--priority-urgent-light);
+}
+
+/* Dark theme class */
+.dark-theme {
+  --background: var(--background-dark);
+  --card-bg: var(--card-dark);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --border: var(--border-dark);
+  --primary: var(--primary-dark);
+  --primary-hover: var(--primary-hover-dark);
+
+  --status-active: var(--status-active-dark);
+  --status-in-progress: var(--status-in-progress-dark);
+  --status-blocked: var(--status-blocked-dark);
+  --status-todo: var(--status-todo-dark);
+
+  --priority-low: var(--priority-low-dark);
+  --priority-medium: var(--priority-medium-dark);
+  --priority-high: var(--priority-high-dark);
+  --priority-urgent: var(--priority-urgent-dark);
+}
