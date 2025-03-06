@@ -4,21 +4,11 @@ import { useState, useEffect } from "react";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import DocumentsOverview from "@/components/documents/DocumentsOverview";
-import { useDocuments } from "@/hooks/useSupabase";
 
 export default function DocumentsPage() {
   const [activePath, setActivePath] = useState("/documents");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const {
-    documents,
-    categories,
-    loading,
-    error,
-    addCategory,
-    addSubcategory,
-    addDocument,
-  } = useDocuments();
 
   // Initialize theme from localStorage on component mount
   useEffect(() => {
@@ -69,20 +59,11 @@ export default function DocumentsPage() {
         {/* Main Content Area */}
         <div className="flex-1 overflow-hidden">
           <DocumentsOverview
-            documents={loading ? [] : documents}
-            categories={loading ? [] : categories}
-            onCategoryAdd={(category) => {
-              console.log("Add category", category);
-              addCategory(category);
-            }}
-            onSubcategoryAdd={(categoryId, subcategory) => {
-              console.log("Add subcategory", categoryId, subcategory);
-              addSubcategory(categoryId, subcategory);
-            }}
-            onDocumentAdd={(document) => {
-              console.log("Add document", document);
-              addDocument(document);
-            }}
+            onCategoryAdd={(category) => console.log("Add category", category)}
+            onSubcategoryAdd={(categoryId, subcategory) =>
+              console.log("Add subcategory", categoryId, subcategory)
+            }
+            onDocumentAdd={(document) => console.log("Add document", document)}
             onDocumentEdit={(id, updates) =>
               console.log("Edit document", id, updates)
             }

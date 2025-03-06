@@ -6,6 +6,7 @@ import Header from "@/components/dashboard/Header";
 import ToolsOverview from "@/components/dashboard/ToolsOverview";
 import AddToolDialog from "@/components/dashboard/AddToolDialog";
 import ToolDetailsDialog from "@/components/dashboard/ToolDetailsDialog";
+import { useTools } from "@/hooks/useSupabase";
 
 export default function AIToolsPage() {
   const [activePath, setActivePath] = useState("/ai-tools");
@@ -13,6 +14,7 @@ export default function AIToolsPage() {
   const [isAddToolDialogOpen, setIsAddToolDialogOpen] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const { tools: supabaseTools, loading, error, addTool, updateTool, deleteTool } = useTools();
 
   // Initialize theme from localStorage on component mount
   useEffect(() => {
@@ -22,8 +24,8 @@ export default function AIToolsPage() {
     }
   }, []);
 
-  // Mock data for tools
-  const [tools, setTools] = useState([
+  // Local state for tools (will be replaced by Supabase data)
+  const [localTools, setLocalTools] = useState(
     {
       id: "tool-1",
       name: "AI Assistant",
@@ -92,6 +94,9 @@ export default function AIToolsPage() {
     },
   ]);
 
+  // Use Supabase tools when available, otherwise use local tools
+  const tools = loading ? localTools : supabaseTools;
+  
   // Get the selected tool details
   const selectedTool = selectedToolId
     ? tools.find((tool) => tool.id === selectedToolId)
@@ -106,21 +111,36 @@ export default function AIToolsPage() {
     setSearchQuery(query);
   };
 
-  const handleAddTool = (newTool: Omit<(typeof tools)[0], "id">) => {
-    const id = `tool-${tools.length + 1}`;
-    setTools([...tools, { ...newTool, id }]);
+  const handleAddTool = (newTool: Omit<(typeof localTools)[0], "id">) => {
+    // Add to Supabase
+    addTool({
+      name: newTool.name,
+      description: newTool.description,
+      status: newTool.status,
+      category: newTool.category,
+      last_updated: new Date().toISOString(),
+      image_url: newTool.imageUrl,
+      is_public: true
+    });
     setIsAddToolDialogOpen(false);
   };
 
-  const handleEditTool = (id: string, updates: Partial<(typeof tools)[0]>) => {
-    setTools(
-      tools.map((tool) => (tool.id === id ? { ...tool, ...updates } : tool)),
-    );
+  const handleEditTool = (id: string, updates: Partial<(typeof localTools)[0]>) => {
+    // Update in Supabase
+    updateTool(id, {
+      name: updates.name,
+      description: updates.description,
+      status: updates.status as "active" | "maintenance",
+      category: updates.category,
+      last_updated: new Date().toISOString(),
+      image_url: updates.imageUrl
+    });
     setSelectedToolId(null);
   };
 
   const handleDeleteTool = (id: string) => {
-    setTools(tools.filter((tool) => tool.id !== id));
+    // Delete from Supabase
+    deleteTool(id);
     setSelectedToolId(null);
   };
 
