@@ -189,7 +189,19 @@ const TasksOverview = ({
   };
 
   const handleTaskSubmit = (task: Omit<Task, "id">) => {
+    // Adicionar a nova tarefa ao estado local
+    const newTask = {
+      ...task,
+      id: `task-${tasks.length + 1}`,
+    };
+
+    // Chamar o callback para adicionar a tarefa
     onTaskAdd(task);
+
+    // Atualizar o estado local
+    tasks.push(newTask);
+
+    // Fechar o diálogo
     setIsAddTaskDialogOpen(false);
   };
 

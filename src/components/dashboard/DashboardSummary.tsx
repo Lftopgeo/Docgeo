@@ -140,7 +140,7 @@ const DashboardSummary = ({
 
   return (
     <div
-      className={`w-full h-full flex flex-col ${isDarkMode ? "bg-black" : "bg-[#FAFAFA]"}`}
+      className={`w-full h-full flex flex-col ${isDarkMode ? "bg-[#0F172A]" : "bg-[#FAFAFA]"}`}
     >
       <div className="p-6">
         <h1
@@ -362,7 +362,9 @@ const DashboardSummary = ({
                       </p>
                     </div>
                     <Badge className={getStatusColor(tool.status)}>
-                      {tool.status === "active" ? "Active" : "Maintenance"}
+                      <span>
+                        {tool.status === "active" ? "Active" : "Maintenance"}
+                      </span>
                     </Badge>
                   </div>
                 ))}
@@ -419,7 +421,7 @@ const DashboardSummary = ({
                       variant="outline"
                       className={`${doc.fileType === "PDF" ? "text-red-500" : doc.fileType === "DOCX" ? "text-blue-500" : "text-purple-500"} ${isDarkMode ? "border-gray-700" : "border-[#B0BEC5]"}`}
                     >
-                      {doc.fileType}
+                      <span>{doc.fileType}</span>
                     </Badge>
                   </div>
                 ))}
@@ -484,10 +486,12 @@ const DashboardSummary = ({
                       </div>
                     </div>
                     <Badge className={getStatusColor(task.status)}>
-                      {task.status === "in-progress"
-                        ? "In Progress"
-                        : task.status.charAt(0).toUpperCase() +
-                          task.status.slice(1)}
+                      <span>
+                        {task.status === "in-progress"
+                          ? "In Progress"
+                          : task.status.charAt(0).toUpperCase() +
+                            task.status.slice(1)}
+                      </span>
                     </Badge>
                   </div>
                 ))}

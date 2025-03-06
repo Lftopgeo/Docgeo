@@ -1,5 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
@@ -36,7 +38,16 @@ const AddSubcategoryDialog = ({
   categoryName = "",
   isDarkMode = true,
 }: AddSubcategoryDialogProps) => {
-  const form = useForm<{ name: string }>({
+  // Define schema for form validation
+  const formSchema = z.object({
+    name: z
+      .string()
+      .min(2, "Nome da subcategoria deve ter pelo menos 2 caracteres")
+      .max(50, "Nome da subcategoria não pode exceder 50 caracteres"),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
     },

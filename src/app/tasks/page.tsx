@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import TasksOverview from "@/components/tasks/TasksOverview";
+import { useTasks } from "@/hooks/useSupabase";
 
 export default function TasksPage() {
   const [activePath, setActivePath] = useState("/tasks");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const { tasks, loading, error, addTask, updateTask, deleteTask } = useTasks();
 
   // Initialize theme from localStorage on component mount
   useEffect(() => {
@@ -59,9 +61,19 @@ export default function TasksPage() {
         {/* Main Content Area */}
         <div className="flex-1 overflow-hidden">
           <TasksOverview
-            onTaskAdd={(task) => console.log("Add task", task)}
-            onTaskEdit={(id, updates) => console.log("Edit task", id, updates)}
-            onTaskDelete={(id) => console.log("Delete task", id)}
+            tasks={loading ? [] : tasks}
+            onTaskAdd={(task) => {
+              console.log("Add task", task);
+              addTask(task);
+            }}
+            onTaskEdit={(id, updates) => {
+              console.log("Edit task", id, updates);
+              updateTask(id, updates);
+            }}
+            onTaskDelete={(id) => {
+              console.log("Delete task", id);
+              deleteTask(id);
+            }}
             isDarkMode={isDarkMode}
           />
         </div>

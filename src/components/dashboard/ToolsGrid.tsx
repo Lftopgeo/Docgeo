@@ -98,8 +98,8 @@ const ToolsGrid = ({
   return (
     <div
       className={
-        ` rounded-lg w-full ${isDarkMode ? "bg-black" : "bg-[#FAFAFA]"}` +
-        " px-4"
+        ` rounded-lg w-full ${isDarkMode ? "" : ""}` +
+        " px-4 opacity-100  bg-[#eaeaec]"
       }
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-16 gap-y-14 justify-items-center">

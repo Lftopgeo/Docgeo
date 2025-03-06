@@ -181,11 +181,20 @@ const DocumentsOverview = ({
   const handleCategorySubmit = (category: { name: string }) => {
     onCategoryAdd({ name: category.name, subcategories: [] });
     setIsAddCategoryDialogOpen(false);
+    // Mostrar feedback de sucesso
+    alert(`Categoria "${category.name}" adicionada com sucesso!`);
   };
 
   const handleSubcategorySubmit = (subcategory: { name: string }) => {
     onSubcategoryAdd(selectedCategoryForSubcategory, subcategory);
     setIsAddSubcategoryDialogOpen(false);
+    // Mostrar feedback de sucesso
+    const categoryName =
+      categories.find((cat) => cat.id === selectedCategoryForSubcategory)
+        ?.name || "";
+    alert(
+      `Subcategoria "${subcategory.name}" adicionada à categoria "${categoryName}" com sucesso!`,
+    );
   };
 
   // Get available subcategories for the selected category
