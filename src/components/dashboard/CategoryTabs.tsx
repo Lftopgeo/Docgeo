@@ -28,40 +28,38 @@ const CategoryTabs = ({
   const getIcon = (iconType: string) => {
     switch (iconType) {
       case "fast":
-        return <Zap className="mr-2 h-4 w-4" />;
+        return <Zap className="mr-2 h-4 w-4 text-amber-500" />;
       case "creative":
-        return <Paintbrush className="mr-2 h-4 w-4" />;
+        return <Paintbrush className="mr-2 h-4 w-4 text-blue-500" />;
       case "coding":
-        return <Code className="mr-2 h-4 w-4" />;
+        return <Code className="mr-2 h-4 w-4 text-green-500" />;
       case "all":
       default:
-        return <LayoutGrid className="mr-2 h-4 w-4" />;
+        return <LayoutGrid className="mr-2 h-4 w-4 text-primary" />;
     }
   };
 
   return (
-    <div
-      className={`w-full py-2 border-b ${isDarkMode ? "bg-[#0F172A] border-blue-700" : "bg-[#FAFAFA] border-[#B0BEC5]"}`}
-    >
+    <div className="w-full py-2 border-b border-border bg-card animate-slide-down" style={{ animationDelay: "100ms" }}>
       <Tabs
         defaultValue={activeCategory}
         value={activeCategory}
         onValueChange={onCategoryChange}
         className="w-full max-w-4xl mx-auto"
       >
-        <TabsList
-          className={`w-full ${isDarkMode ? "bg-[#0F172A] border border-blue-700" : "bg-[#FAFAFA] border border-[#B0BEC5]"}`}
-        >
+        <TabsList className="w-full bg-secondary/30 border border-border rounded-lg">
           {categories.map((category) => (
             <TabsTrigger
               key={category.id}
               value={category.id}
-              className="flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:text-white text-white"
+              className="flex-1 flex items-center justify-center transition-all
+                data-[state=active]:bg-primary/10 data-[state=active]:text-primary 
+                text-foreground hover:text-primary hover:bg-secondary/50"
             >
               {getIcon(category.icon)}
               <span>{category.name}</span>
               {category.count !== undefined && (
-                <span className="ml-2 rounded-full bg-[#FF6B00]/20 px-2 py-0.5 text-xs text-white">
+                <span className="ml-2 rounded-full bg-secondary px-2 py-0.5 text-xs text-foreground">
                   {category.count}
                 </span>
               )}

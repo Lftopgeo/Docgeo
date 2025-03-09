@@ -1,42 +1,52 @@
-import { createClient } from "@/lib/supabase/server";
+import { documentService } from "@/services";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const supabase = createClient();
-  const { data, error } = await supabase.from("document_categories").select(`
-    *,
-    document_subcategories(*)
-  `);
-
-  if (error) {
+  try {
+    const data = await documentService.server.getAllCategories();
+    return NextResponse.json(data);
+  } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
-  return NextResponse.json(data);
 }
 
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
-  const { data: sessionData } = await supabase.auth.getSession();
-
-  if (!sessionData.session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const userId = sessionData.session.user.id;
-  const body = await req.json();
-
-  const { data, error } = await supabase
-    .from("document_categories")
-    .insert({
-      ...body,
-      created_by: userId,
-    })
-    .select();
-
-  if (error) {
+  try {
+    const body = await req.json();
+    const data = await documentService.server.createCategory(body);
+    return NextResponse.json(data);
+  } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
 
-  return NextResponse.json(data[0]);
+export async function PUT(req: NextRequest) {
+  try {
+    const { id, ...updates } = await req.json();
+    
+    if (!id) {
+      return NextResponse.json({ error: "ID é obrigatório" }, { status: 400 });
+    }
+    
+    const data = await documentService.server.updateCategory(id, updates);
+    return NextResponse.json(data);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    
+    if (!id) {
+      return NextResponse.json({ error: "ID é obrigatório" }, { status: 400 });
+    }
+    
+    await documentService.server.deleteCategory(id);
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

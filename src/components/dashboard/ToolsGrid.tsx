@@ -96,13 +96,8 @@ const ToolsGrid = ({
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
 
   return (
-    <div
-      className={
-        ` rounded-lg w-full ${isDarkMode ? "" : ""}` +
-        " px-4 opacity-100  bg-[#eaeaec]"
-      }
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-16 gap-y-14 justify-items-center">
+    <div className="rounded-lg w-full bg-background p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
         {tools.map((tool) => (
           <ToolCard
             key={tool.id}
@@ -125,13 +120,11 @@ const ToolsGrid = ({
       </div>
       {tools.length === 0 && (
         <div className="flex flex-col items-center justify-center h-64 text-center">
-          <p
-            className={`text-xl mb-4 ${isDarkMode ? "text-white" : "text-[#212121]"}`}
-          >
-            No AI tools found
+          <p className="text-xl mb-4 text-foreground">
+            Nenhuma ferramenta IA encontrada
           </p>
-          <p className={isDarkMode ? "text-white" : "text-[#212121]"}>
-            Try adjusting your filters or add a new tool to get started
+          <p className="text-muted-foreground">
+            Tente ajustar seus filtros ou adicione uma nova ferramenta para começar
           </p>
         </div>
       )}

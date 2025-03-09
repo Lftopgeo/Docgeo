@@ -50,9 +50,7 @@ const ToolsFilter = ({
   };
 
   return (
-    <div
-      className={`w-full h-[70px] p-4 flex items-center justify-between gap-4 ${isDarkMode ? "bg-[#0F172A] border-b border-blue-700" : "bg-[#FAFAFA] border-b border-[#B0BEC5]"}`}
-    >
+    <div className="w-full p-4 flex items-center justify-between gap-4 border-b border-border bg-card animate-slide-down">
       <div className="flex items-center gap-4 flex-1">
         <div className="relative w-full max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -60,44 +58,37 @@ const ToolsFilter = ({
             placeholder="Buscar ferramentas IA..."
             value={query}
             onChange={handleSearch}
-            className={`pl-10 rounded-full ${isDarkMode ? "bg-[#0F172A] border-gray-700" : "bg-white border-[#B0BEC5]"}`}
+            className="pl-10 rounded-full bg-secondary/50 text-foreground placeholder:text-muted-foreground glass-effect"
           />
         </div>
 
-        <div className="flex items-center gap-2 text-[#cdc6c6]">
+        <div className="flex items-center gap-2">
           <Badge
             variant="outline"
-            className={
-              cn(
-                "cursor-pointer hover:bg-accent px-3 py-1",
-                selectedStatus === "all" && "bg-accent text-accent-foreground",
-              ) + " bg-[#625c5c]"
-            }
+            className={cn(
+              "cursor-pointer hover:bg-secondary px-3 py-1 transition-colors",
+              selectedStatus === "all" && "bg-secondary text-foreground"
+            )}
             onClick={() => handleStatusChange("all")}
           >
             Todos
           </Badge>
           <Badge
             variant="outline"
-            className={
-              cn(
-                "cursor-pointer hover:bg-green-900/30 px-3 py-1",
-                selectedStatus === "active" && "bg-green-900/30 text-green-400",
-              ) + " text-green-400"
-            }
+            className={cn(
+              "cursor-pointer hover:bg-green-500/10 px-3 py-1 transition-colors",
+              selectedStatus === "active" && "bg-green-500/10 text-green-500 border-green-500/20"
+            )}
             onClick={() => handleStatusChange("active")}
           >
             Ativo
           </Badge>
           <Badge
             variant="outline"
-            className={
-              cn(
-                "cursor-pointer hover:bg-amber-900/30 px-3 py-1",
-                selectedStatus === "maintenance" &&
-                  "bg-amber-900/30 text-amber-400",
-              ) + " text-amber-400"
-            }
+            className={cn(
+              "cursor-pointer hover:bg-amber-500/10 px-3 py-1 transition-colors",
+              selectedStatus === "maintenance" && "bg-amber-500/10 text-amber-500 border-amber-500/20"
+            )}
             onClick={() => handleStatusChange("maintenance")}
           >
             Manutenção
@@ -108,12 +99,10 @@ const ToolsFilter = ({
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
           <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-            <SelectTrigger
-              className={`w-[180px] ${isDarkMode ? "border-gray-700 bg-[#0F172A]" : "border-[#B0BEC5] bg-white"}`}
-            >
+            <SelectTrigger className="w-[180px] bg-secondary/50 border-border">
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="glass-effect">
               <SelectItem value="all">Todas Categorias</SelectItem>
               <SelectItem value="fast-processing">
                 Processamento Rápido
@@ -128,7 +117,7 @@ const ToolsFilter = ({
 
         <Button
           onClick={onAddNewTool}
-          className="bg-[#FF6B00] hover:bg-[#FF8C3F] text-white rounded-full"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full hover-lift transition-all"
         >
           <Plus className="mr-2 h-4 w-4" /> Adicionar Nova Ferramenta
         </Button>

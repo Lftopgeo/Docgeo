@@ -158,9 +158,7 @@ const ToolsOverview = ({
   };
 
   return (
-    <div
-      className={`w-full h-full flex flex-col ${isDarkMode ? "bg-[#0F172A]" : "bg-[#FAFAFA]"}`}
-    >
+    <div className="w-full h-full flex flex-col bg-background">
       {/* Filter bar */}
       <ToolsFilter
         onSearch={handleSearch}
@@ -181,7 +179,7 @@ const ToolsOverview = ({
       />
 
       {/* Tools grid */}
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-auto p-4 animate-fade-in">
         <ToolsGrid
           tools={filteredTools}
           onToolClick={handleToolClick}

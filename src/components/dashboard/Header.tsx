@@ -1,128 +1,145 @@
-import React from "react";
-import { Input } from "../ui/input";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "../ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import {
   Bell,
-  Search,
   Settings,
   HelpCircle,
   LogOut,
+  Search,
   Moon,
   Sun,
+  Menu,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 interface HeaderProps {
-  username?: string;
-  avatarUrl?: string;
   onSearch?: (query: string) => void;
+  onThemeToggle?: () => void;
   onNotificationsClick?: () => void;
   onSettingsClick?: () => void;
   onHelpClick?: () => void;
   onLogoutClick?: () => void;
-  onThemeToggle?: () => void;
   isDarkMode?: boolean;
 }
 
 const Header = ({
-  username = "John Doe",
-  avatarUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
   onSearch = () => {},
+  onThemeToggle = () => {},
   onNotificationsClick = () => {},
   onSettingsClick = () => {},
   onHelpClick = () => {},
   onLogoutClick = () => {},
-  onThemeToggle = () => {},
   isDarkMode = true,
 }: HeaderProps) => {
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    onSearch(value);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      onSearch(searchQuery);
-    }
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    onSearch(e.target.value);
   };
 
   return (
     <header
-      className={`w-full h-[80px] px-6 flex items-center justify-between ${isDarkMode ? "bg-[#0F172A] border-b border-blue-700" : "bg-[#FAFAFA] border-b border-[#B0BEC5]"}`}
+      className={`h-16 px-4 flex items-center justify-between border-b border-border animate-fade-in transition-all bg-card`}
     >
-      <div className="flex-1 max-w-xl relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Buscar ferramentas IA, documentos, tarefas..."
-          className={`pl-10 w-full rounded-full ${isDarkMode ? "bg-[#0F172A] border-gray-700" : "bg-white border-[#B0BEC5]"}`}
-          value={searchQuery}
-          onChange={handleSearch}
-          onKeyDown={handleKeyDown}
-        />
+      {/* Mobile menu button - visible on small screens */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="md:hidden text-foreground hover:text-primary transition-colors"
+      >
+        <Menu className="h-5 w-5" />
+        <span className="sr-only">Menu</span>
+      </Button>
+
+      {/* Search bar */}
+      <div className="relative flex-1 max-w-md animate-slide-down" style={{ animationDelay: "100ms" }}>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Pesquisar..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className={`w-full pl-10 pr-4 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all
+              bg-secondary/50 text-foreground placeholder:text-muted-foreground glass-effect`}
+          />
+        </div>
       </div>
-      <div className="flex items-center gap-4">
+
+      {/* Action buttons */}
+      <div className="flex items-center space-x-2 animate-slide-left" style={{ animationDelay: "150ms" }}>
+        {/* Theme toggle */}
         <Button
           variant="ghost"
           size="icon"
-          onClick={onNotificationsClick}
-          className="relative"
+          onClick={onThemeToggle}
+          className="text-foreground hover:text-primary hover:bg-secondary transition-colors hover-scale rounded-full"
+          aria-label={isDarkMode ? "Ativar modo claro" : "Ativar modo escuro"}
         >
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          <span className="sr-only">Notifications</span>
-        </Button>
-
-        <Button variant="ghost" size="icon" onClick={onThemeToggle}>
           {isDarkMode ? (
             <Sun className="h-5 w-5" />
           ) : (
             <Moon className="h-5 w-5" />
           )}
-          <span className="sr-only">Toggle theme</span>
         </Button>
 
+        {/* Notifications */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onNotificationsClick}
+          className="text-foreground hover:text-primary hover:bg-secondary transition-colors hover-scale rounded-full relative"
+        >
+          <Bell className="h-5 w-5" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
+        </Button>
+
+        {/* Settings dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="p-0 h-10 w-10 rounded-full">
-              <Avatar>
-                <AvatarImage src={avatarUrl} alt={username} />
-                <AvatarFallback>
-                  {username.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-foreground hover:text-primary hover:bg-secondary transition-colors hover-scale rounded-full"
+            >
+              <Settings className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <div className="px-2 py-1.5">
-              <p className="text-sm font-medium">{username}</p>
-              <p className="text-xs text-white">Admin</p>
-            </div>
+          <DropdownMenuContent
+            align="end"
+            className="w-56 animate-scale glass-effect"
+          >
+            <DropdownMenuLabel className="font-medium">Minha Conta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onSettingsClick}>
+            <DropdownMenuItem
+              className="cursor-pointer hover:bg-secondary transition-colors focus:bg-secondary focus:text-foreground"
+              onClick={onSettingsClick}
+            >
               <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+              <span>Configurações</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onHelpClick}>
+            <DropdownMenuItem
+              className="cursor-pointer hover:bg-secondary transition-colors focus:bg-secondary focus:text-foreground"
+              onClick={onHelpClick}
+            >
               <HelpCircle className="mr-2 h-4 w-4" />
-              <span>Help & Documentation</span>
+              <span>Ajuda & Suporte</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              className="cursor-pointer text-destructive hover:bg-destructive/10 transition-colors focus:bg-destructive/10"
               onClick={onLogoutClick}
-              className="text-destructive focus:text-destructive"
             >
               <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+              <span>Sair</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

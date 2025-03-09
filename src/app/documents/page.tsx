@@ -32,7 +32,7 @@ export default function DocumentsPage() {
     setIsDarkMode(newTheme);
     localStorage.setItem("ai_tools_dashboard_theme", JSON.stringify(newTheme));
   };
-
+    
   return (
     <main
       className={`flex h-screen overflow-hidden ${isDarkMode ? "dark-theme bg-[#0F172A] text-white" : "light-theme bg-[#FAFAFA] text-[#212121]"}`}

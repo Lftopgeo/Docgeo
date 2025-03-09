@@ -26,10 +26,8 @@ const DocumentsGrid = ({
   isDarkMode = true,
 }: DocumentsGridProps) => {
   return (
-    <div
-      className={`p-8 rounded-lg w-full ${isDarkMode ? "bg-black" : "bg-[#FAFAFA]"}`}
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-16 gap-y-14 justify-items-center w-[1200]">
+    <div className="rounded-lg w-full bg-background p-4 animate-fade-in">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
         {documents.map((document) => (
           <DocumentCard
             key={document.id}
@@ -49,13 +47,11 @@ const DocumentsGrid = ({
       </div>
       {documents.length === 0 && (
         <div className="flex flex-col items-center justify-center h-64 text-center">
-          <p
-            className={`text-xl mb-4 ${isDarkMode ? "text-white" : "text-[#212121]"}`}
-          >
-            No documents found
+          <p className="text-xl mb-4 text-foreground">
+            Nenhum documento encontrado
           </p>
-          <p className={isDarkMode ? "text-white" : "text-[#212121]"}>
-            Try adjusting your filters or add a new document to get started
+          <p className="text-muted-foreground">
+            Tente ajustar seus filtros ou adicione um novo documento para começar
           </p>
         </div>
       )}

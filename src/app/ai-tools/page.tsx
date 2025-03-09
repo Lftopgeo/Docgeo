@@ -7,6 +7,67 @@ import ToolsOverview from "@/components/dashboard/ToolsOverview";
 import AddToolDialog from "@/components/dashboard/AddToolDialog";
 import ToolDetailsDialog from "@/components/dashboard/ToolDetailsDialog";
 import { useTools } from "@/hooks/useSupabase";
+import { Database } from "@/lib/supabase/database.types";
+
+// Define o tipo Tool conforme esperado pelo componente ToolsOverview
+interface Tool {
+  id: string;
+  name: string;
+  description: string;
+  status: "active" | "maintenance";
+  category: string;
+  lastUpdated: string;
+  imageUrl: string;
+}
+
+// Define o tipo ToolFormData conforme esperado pelo componente AddToolDialog
+interface ToolFormData {
+  name: string;
+  description: string;
+  category: string;
+  status: "active" | "maintenance";
+  imageUrl?: string;
+  apiEndpoint?: string;
+  isPublic: boolean;
+}
+
+// Função para adaptar os dados do Supabase para o formato esperado pelo componente
+function adaptSupabaseTools(
+  supabaseTools: Database["public"]["Tables"]["tools"]["Row"][]
+): Tool[] {
+  return supabaseTools.map((tool) => ({
+    id: tool.id,
+    name: tool.name,
+    description: tool.description || "",
+    status: tool.status,
+    category: tool.category,
+    lastUpdated: tool.last_updated,
+    imageUrl: tool.image_url || "",
+  }));
+}
+
+// Função para adaptar os dados do formato do formulário para o formato do Supabase
+function adaptToolForSupabase(
+  tool: ToolFormData
+): Omit<Database["public"]["Tables"]["tools"]["Insert"], "id" | "created_by" | "created_at"> {
+  // Converter o formato da categoria (de kebab-case para Title Case)
+  const categoryMap: Record<string, string> = {
+    "fast-processing": "Fast Processing",
+    "creative-suite": "Creative Suite",
+    "smart-coding": "Smart Coding"
+  };
+
+  return {
+    name: tool.name,
+    description: tool.description,
+    status: tool.status,
+    category: categoryMap[tool.category] || tool.category,
+    last_updated: new Date().toISOString(),
+    image_url: tool.imageUrl,
+    api_endpoint: tool.apiEndpoint,
+    is_public: tool.isPublic
+  };
+}
 
 export default function AIToolsPage() {
   const [activePath, setActivePath] = useState("/ai-tools");
@@ -25,7 +86,7 @@ export default function AIToolsPage() {
   }, []);
 
   // Local state for tools (will be replaced by Supabase data)
-  const [localTools, setLocalTools] = useState(
+  const [localTools, setLocalTools] = useState<Tool[]>([
     {
       id: "tool-1",
       name: "AI Assistant",
@@ -95,7 +156,7 @@ export default function AIToolsPage() {
   ]);
 
   // Use Supabase tools when available, otherwise use local tools
-  const tools = loading ? localTools : supabaseTools;
+  const tools = loading ? localTools : adaptSupabaseTools(supabaseTools || []);
   
   // Get the selected tool details
   const selectedTool = selectedToolId
@@ -111,28 +172,20 @@ export default function AIToolsPage() {
     setSearchQuery(query);
   };
 
-  const handleAddTool = (newTool: Omit<(typeof localTools)[0], "id">) => {
+  const handleAddTool = (formData: ToolFormData) => {
     // Add to Supabase
-    addTool({
-      name: newTool.name,
-      description: newTool.description,
-      status: newTool.status,
-      category: newTool.category,
-      last_updated: new Date().toISOString(),
-      image_url: newTool.imageUrl,
-      is_public: true
-    });
+    addTool(adaptToolForSupabase(formData));
     setIsAddToolDialogOpen(false);
   };
 
-  const handleEditTool = (id: string, updates: Partial<(typeof localTools)[0]>) => {
+  const handleEditTool = (id: string, updates: Partial<Tool>) => {
     // Update in Supabase
     updateTool(id, {
       name: updates.name,
       description: updates.description,
-      status: updates.status as "active" | "maintenance",
+      status: updates.status,
       category: updates.category,
-      last_updated: new Date().toISOString(),
+      last_updated: updates.lastUpdated,
       image_url: updates.imageUrl
     });
     setSelectedToolId(null);
@@ -181,7 +234,18 @@ export default function AIToolsPage() {
         <div className="flex-1 overflow-hidden">
           <ToolsOverview
             tools={tools}
-            onToolAdd={handleAddTool}
+            onToolAdd={(toolData) => {
+              // Converter de Tool para ToolFormData
+              const formData: ToolFormData = {
+                name: toolData.name,
+                description: toolData.description,
+                category: toolData.category,
+                status: toolData.status,
+                imageUrl: toolData.imageUrl,
+                isPublic: true
+              };
+              handleAddTool(formData);
+            }}
             onToolEdit={handleEditTool}
             onToolDelete={handleDeleteTool}
             isDarkMode={isDarkMode}

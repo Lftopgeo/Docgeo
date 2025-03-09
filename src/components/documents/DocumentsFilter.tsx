@@ -22,9 +22,7 @@ const DocumentsFilter = ({
   };
 
   return (
-    <div
-      className={`w-full h-[70px] p-4 flex items-center justify-between gap-4 ${isDarkMode ? "bg-[#0F172A] border-b border-blue-700" : "bg-[#FAFAFA] border-b border-[#B0BEC5]"}`}
-    >
+    <div className="w-full p-4 flex items-center justify-between gap-4 border-b border-border bg-card animate-slide-down">
       <div className="flex items-center gap-4 flex-1">
         <div className="relative w-full max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -32,7 +30,7 @@ const DocumentsFilter = ({
             placeholder="Buscar documentos..."
             value={query}
             onChange={handleSearch}
-            className={`pl-10 rounded-full ${isDarkMode ? "bg-[#0F172A] border-gray-700" : "bg-white border-[#B0BEC5]"}`}
+            className="pl-10 rounded-full bg-secondary/50 text-foreground placeholder:text-muted-foreground glass-effect"
           />
         </div>
       </div>

@@ -72,74 +72,100 @@ const Sidebar = ({
 
   return (
     <div
-      className={`w-[250px] h-full flex flex-col ${isDarkMode ? "bg-[#0F172A] border-r border-blue-700" : "bg-white border-r border-[#B0BEC5]"}`}
+      className={`w-[250px] h-full flex flex-col transition-all duration-300 bg-card border-r border-border shadow-md`}
     >
       <div className="p-6">
         <h1
-          className={`text-xl font-bold flex items-center ${isDarkMode ? "text-white" : "text-[#212121]"}`}
+          className={`text-xl font-bold flex items-center animate-fade-in`}
         >
-          <Cpu className="w-6 h-6 mr-2 text-[#FF6B00]" />
-          Central de IA
+          <div className="p-2 rounded-full bg-primary/10 mr-2">
+            <Cpu className="w-5 h-5 text-primary" />
+          </div>
+          <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            Central de IA
+          </span>
         </h1>
       </div>
 
       <div className="flex-1 overflow-y-auto px-3">
-        <div className="mb-6">
+        <div className="mb-6 animate-slide-right" style={{ animationDelay: "100ms" }}>
           <p
-            className={`text-xs font-medium uppercase tracking-wider px-3 mb-2 ${isDarkMode ? "text-white" : "text-[#757575]"}`}
+            className={`text-xs font-medium uppercase tracking-wider px-3 mb-2 text-muted-foreground`}
           >
             Navegação Principal
           </p>
           <nav className="space-y-1">
-            {navigationItems.map((item) => (
+            {navigationItems.map((item, index) => (
               <TooltipProvider key={item.path}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      variant="ghost"
+                      variant={activePath === item.path ? "default" : "ghost"}
                       className={cn(
-                        `w-full justify-start ${isDarkMode ? "text-white hover:text-white hover:bg-gray-800" : "text-[#212121] hover:text-[#212121] hover:bg-gray-100"}`,
-                        activePath === item.path &&
-                          `${isDarkMode ? "bg-gray-800 text-white" : "bg-gray-100 text-[#212121]"} font-medium`,
+                        `w-full justify-start transition-all hover-lift animate-slide-right group`,
+                        activePath === item.path
+                          ? `bg-primary text-primary-foreground font-medium`
+                          : `text-foreground hover:text-foreground hover:bg-muted`
                       )}
                       onClick={() => onNavigate(item.path)}
+                      style={{ animationDelay: `${150 + index * 50}ms` }}
                     >
-                      {item.icon}
-                      <span className="ml-3">{item.name}</span>
+                      <div className={cn(
+                        "p-1 rounded-md mr-2 transition-colors",
+                        activePath === item.path
+                          ? "bg-primary-foreground/20"
+                          : "bg-transparent group-hover:bg-muted-foreground/10"
+                      )}>
+                        {item.icon}
+                      </div>
+                      <span className="ml-1">{item.name}</span>
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="right">{item.name}</TooltipContent>
+                  <TooltipContent side="right" className="animate-fade-in">
+                    {item.name}
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             ))}
           </nav>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 animate-slide-right" style={{ animationDelay: "300ms" }}>
           <p
-            className={`text-xs font-medium uppercase tracking-wider px-3 mb-2 ${isDarkMode ? "text-white" : "text-[#757575]"}`}
+            className={`text-xs font-medium uppercase tracking-wider px-3 mb-2 text-muted-foreground`}
           >
             Utilitários
           </p>
           <nav className="space-y-1">
-            {utilityItems.map((item) => (
+            {utilityItems.map((item, index) => (
               <TooltipProvider key={item.path}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      variant="ghost"
+                      variant={activePath === item.path ? "default" : "ghost"}
                       className={cn(
-                        `w-full justify-start ${isDarkMode ? "text-white hover:text-white hover:bg-gray-800" : "text-[#212121] hover:text-[#212121] hover:bg-gray-100"}`,
-                        activePath === item.path &&
-                          `${isDarkMode ? "bg-gray-800 text-white" : "bg-gray-100 text-[#212121]"} font-medium`,
+                        `w-full justify-start transition-all hover-lift animate-slide-right group`,
+                        activePath === item.path
+                          ? `bg-primary text-primary-foreground font-medium`
+                          : `text-foreground hover:text-foreground hover:bg-muted`
                       )}
                       onClick={() => onNavigate(item.path)}
+                      style={{ animationDelay: `${350 + index * 50}ms` }}
                     >
-                      {item.icon}
-                      <span className="ml-3">{item.name}</span>
+                      <div className={cn(
+                        "p-1 rounded-md mr-2 transition-colors",
+                        activePath === item.path
+                          ? "bg-primary-foreground/20"
+                          : "bg-transparent group-hover:bg-muted-foreground/10"
+                      )}>
+                        {item.icon}
+                      </div>
+                      <span className="ml-1">{item.name}</span>
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="right">{item.name}</TooltipContent>
+                  <TooltipContent side="right" className="animate-fade-in">
+                    {item.name}
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             ))}
@@ -147,23 +173,23 @@ const Sidebar = ({
         </div>
       </div>
 
-      <div className="p-4 border-t border-blue-700">
-        <div className="flex items-center">
+      <div className="p-4 border-t border-border animate-slide-up">
+        <div className="flex items-center p-2 rounded-lg transition-all hover:bg-muted cursor-pointer glass-effect">
           <div className="flex-shrink-0">
             <img
-              className="h-10 w-10 rounded-full"
+              className="h-10 w-10 rounded-full border-2 border-primary/20 hover-scale"
               src={userAvatar}
               alt={userName}
             />
           </div>
           <div className="ml-3">
             <p
-              className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-[#212121]"}`}
+              className={`text-sm font-medium text-foreground`}
             >
               {userName}
             </p>
             <p
-              className={`text-xs ${isDarkMode ? "text-white" : "text-[#757575]"}`}
+              className={`text-xs text-muted-foreground`}
             >
               {userRole}
             </p>
@@ -171,7 +197,7 @@ const Sidebar = ({
           <Button
             variant="ghost"
             size="icon"
-            className="ml-auto text-gray-400 hover:text-white"
+            className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => onNavigate("/logout")}
           >
             <LogOut className="h-5 w-5" />

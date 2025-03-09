@@ -26,6 +26,13 @@ export default function Home() {
     if (savedTheme !== null) {
       setIsDarkMode(JSON.parse(savedTheme));
     }
+    
+    // Add a class to the body for page transitions
+    document.body.classList.add('animate-fade-in');
+    
+    return () => {
+      document.body.classList.remove('animate-fade-in');
+    };
   }, []);
 
   // Mock data for tools
@@ -117,9 +124,30 @@ export default function Home() {
     setSearchQuery(query);
   };
 
-  const handleAddTool = (newTool: Omit<(typeof tools)[0], "id">) => {
+  // Interface para o tipo ToolFormData
+  interface ToolFormData {
+    name: string;
+    description: string;
+    category: string;
+    status: "active" | "maintenance";
+    imageUrl?: string;
+    apiEndpoint?: string;
+    isPublic: boolean;
+  }
+
+  const handleAddTool = (formData: ToolFormData) => {
     const id = `tool-${tools.length + 1}`;
-    setTools([...tools, { ...newTool, id }]);
+    const newTool = {
+      id,
+      name: formData.name,
+      description: formData.description,
+      status: formData.status,
+      category: formData.category,
+      lastUpdated: new Date().toLocaleDateString(),
+      imageUrl: formData.imageUrl || "https://via.placeholder.com/300",
+    };
+    
+    setTools([...tools, newTool]);
     setIsAddToolDialogOpen(false);
   };
 
@@ -143,11 +171,18 @@ export default function Home() {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
     localStorage.setItem("ai_tools_dashboard_theme", JSON.stringify(newTheme));
+    
+    // Adiciona classe ao body para controlar o tema
+    if (newTheme) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   };
 
   return (
     <main
-      className={`flex h-screen overflow-hidden ${isDarkMode ? "dark-theme bg-[#0F172A] text-white" : "light-theme bg-[#FAFAFA] text-[#212121]"}`}
+      className={`flex h-screen overflow-hidden bg-background text-foreground transition-colors duration-300`}
     >
       {/* Sidebar */}
       <Sidebar
@@ -169,7 +204,7 @@ export default function Home() {
         />
 
         {/* Main Content Area */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-auto">
           {activeView === "home" ? (
             <DashboardSummary
               isDarkMode={isDarkMode}
@@ -178,7 +213,18 @@ export default function Home() {
           ) : activeView === "tools" ? (
             <ToolsOverview
               tools={tools}
-              onToolAdd={handleAddTool}
+              onToolAdd={(toolData) => {
+                // Converter de Tool para ToolFormData
+                const formData: ToolFormData = {
+                  name: toolData.name,
+                  description: toolData.description,
+                  category: toolData.category,
+                  status: toolData.status,
+                  imageUrl: toolData.imageUrl,
+                  isPublic: true
+                };
+                handleAddTool(formData);
+              }}
               onToolEdit={handleEditTool}
               onToolDelete={handleDeleteTool}
               isDarkMode={isDarkMode}

@@ -196,9 +196,7 @@ const DocumentsOverview = ({
       : [];
 
   return (
-    <div
-      className={`w-full h-full flex flex-col ${isDarkMode ? "bg-[#0F172A]" : "bg-[#FAFAFA]"}`}
-    >
+    <div className="w-full h-full flex flex-col bg-background">
       {/* Filter bar */}
       <DocumentsFilter
         onSearch={handleSearch}
@@ -206,9 +204,7 @@ const DocumentsOverview = ({
         isDarkMode={isDarkMode}
       />
       {/* Category selector */}
-      <div
-        className={`flex items-center justify-between px-6 py-4 border-b ${isDarkMode ? "border-blue-700" : "border-[#B0BEC5]"}`}
-      >
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card animate-slide-down" style={{ animationDelay: "100ms" }}>
         <CategorySelector
           categories={categories}
           selectedCategory={selectedCategory}
@@ -223,11 +219,7 @@ const DocumentsOverview = ({
           {selectedCategory !== "all" && (
             <Button
               variant="outline"
-              className={
-                isDarkMode
-                  ? "border-blue-600 text-blue-400 hover:bg-blue-900/20"
-                  : "border-[#B0BEC5] text-[#FF6B00] hover:bg-orange-100"
-              }
+              className="border-border text-foreground hover:bg-secondary transition-colors"
               onClick={() =>
                 handleAddSubcategory(
                   categories.find((cat) => cat.name === selectedCategory)?.id ||
@@ -239,7 +231,7 @@ const DocumentsOverview = ({
             </Button>
           )}
           <Button
-            className="bg-[#FF6B00] hover:bg-[#FF8C3F] text-white rounded-full"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full hover-lift transition-all"
             onClick={() => setIsAddCategoryDialogOpen(true)}
           >
             <Plus className="mr-2 h-4 w-4" /> Adicionar Categoria
@@ -247,11 +239,12 @@ const DocumentsOverview = ({
         </div>
       </div>
       {/* Documents grid */}
-      <div className="flex-1 overflow-auto p-4 container">
+      <div className="flex-1 overflow-auto p-4">
         <DocumentsGrid
           documents={filteredDocuments}
-          onDocumentEdit={onDocumentEdit}
+          onDocumentEdit={(id) => onDocumentEdit(id, {})}
           onDocumentDelete={onDocumentDelete}
+          isDarkMode={isDarkMode}
         />
       </div>
       {/* Add Category Dialog */}
@@ -259,6 +252,7 @@ const DocumentsOverview = ({
         open={isAddCategoryDialogOpen}
         onOpenChange={setIsAddCategoryDialogOpen}
         onSubmit={handleCategorySubmit}
+        isDarkMode={isDarkMode}
       />
       {/* Add Subcategory Dialog */}
       <AddSubcategoryDialog
@@ -269,6 +263,7 @@ const DocumentsOverview = ({
           categories.find((cat) => cat.id === selectedCategoryForSubcategory)
             ?.name || ""
         }
+        isDarkMode={isDarkMode}
       />
     </div>
   );
