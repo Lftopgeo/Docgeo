@@ -7,6 +7,12 @@ import {
   Category,
   Subcategory
 } from '@/repositories';
+import { storageService, STORAGE_BUCKETS } from './storageService';
+
+// Interface para upload de documento com arquivo
+export interface DocumentUpload extends Omit<DocumentCreate, 'file_url' | 'file_type' | 'file_size'> {
+  file: File;
+}
 
 export const documentService = {
   async getAllDocuments(): Promise<Document[]> {
@@ -238,5 +244,70 @@ export const documentService = {
     async deleteSubcategory(id: string) {
       return categoryRepository.server.subcategory.delete(id);
     },
+  },
+
+  /**
+   * Faz upload de um documento com arquivo
+   */
+  async uploadDocument(documentData: DocumentUpload): Promise<Document> {
+    try {
+      // 1. Fazer upload do arquivo para o bucket de documentos
+      const filePath = await storageService.uploadFile({
+        bucket: STORAGE_BUCKETS.DOCUMENTS,
+        file: documentData.file
+      });
+
+      // 2. Obter a URL pública do arquivo
+      const fileUrl = storageService.getPublicUrl(STORAGE_BUCKETS.DOCUMENTS, filePath);
+
+      // 3. Criar o documento no banco de dados
+      const document: DocumentCreate = {
+        title: documentData.title,
+        description: documentData.description,
+        file_url: fileUrl,
+        file_type: documentData.file.type,
+        file_size: documentData.file.size,
+        category_id: documentData.category_id,
+        subcategory_id: documentData.subcategory_id,
+        created_by: documentData.created_by
+      };
+
+      return this.createDocument(document);
+    } catch (error) {
+      console.error('Erro ao fazer upload do documento:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Exclui um documento e seu arquivo
+   */
+  async deleteDocumentWithFile(id: string): Promise<void> {
+    try {
+      // 1. Obter o documento para pegar o caminho do arquivo
+      const document = await this.getDocumentById(id);
+      
+      if (!document) {
+        throw new Error(`Documento com ID ${id} não encontrado`);
+      }
+
+      // 2. Excluir o documento do banco de dados
+      await this.deleteDocument(id);
+
+      // 3. Se houver um arquivo, excluí-lo do storage
+      if (document.file_url) {
+        // Extrair o caminho do arquivo da URL
+        const url = new URL(document.file_url);
+        const pathMatch = url.pathname.match(/\/storage\/v1\/object\/public\/documents\/(.+)$/);
+        
+        if (pathMatch && pathMatch[1]) {
+          const filePath = decodeURIComponent(pathMatch[1]);
+          await storageService.deleteFile(STORAGE_BUCKETS.DOCUMENTS, filePath);
+        }
+      }
+    } catch (error) {
+      console.error(`Erro ao excluir documento com ID ${id}:`, error);
+      throw error;
+    }
   },
 }; 

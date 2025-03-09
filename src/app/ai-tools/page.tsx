@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import ToolsOverview from "@/components/dashboard/ToolsOverview";
@@ -72,6 +72,7 @@ function adaptToolForSupabase(
 
 export default function AIToolsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [activePath, setActivePath] = useState("/ai-tools");
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddToolDialogOpen, setIsAddToolDialogOpen] = useState(false);
@@ -86,6 +87,15 @@ export default function AIToolsPage() {
       setIsDarkMode(JSON.parse(savedTheme));
     }
   }, []);
+
+  // Use searchParams em vez de router.query
+  useEffect(() => {
+    // Exemplo de como usar searchParams
+    const category = searchParams?.get("category");
+    if (category) {
+      // Implementar lógica de filtragem por categoria
+    }
+  }, [searchParams]);
 
   // Local state for tools (will be replaced by Supabase data)
   const [localTools, setLocalTools] = useState<Tool[]>([
@@ -177,8 +187,7 @@ export default function AIToolsPage() {
     } else if (path === "/tasks") {
       router.push("/tasks");
     } else if (path === "/settings") {
-      // Implementar quando a página de configurações estiver disponível
-      alert("Página de configurações em desenvolvimento");
+      router.push("/settings");
     } else if (path === "/help") {
       // Implementar quando a página de ajuda estiver disponível
       alert("Página de ajuda em desenvolvimento");

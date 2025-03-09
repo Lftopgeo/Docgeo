@@ -234,7 +234,8 @@ export function useTasks() {
         // Fetch tasks
         const { data: tasksData, error: tasksError } = await supabase
           .from("tasks")
-          .select("*");
+          .select("*, assignee_id")
+          .order("due_date", { ascending: true });
 
         if (tasksError) throw tasksError;
 
@@ -249,19 +250,56 @@ export function useTasks() {
 
         if (tagsError) throw tagsError;
 
-        // Combine tasks with their tags
-        const tasksWithTags = tasksData.map((task) => {
+        // Fetch user profiles for assignees
+        const assigneeIds = tasksData
+          .map((task) => task.assignee_id)
+          .filter(Boolean); // Remove null/undefined values
+
+        let assigneeProfiles: any[] = [];
+        if (assigneeIds.length > 0) {
+          const { data: profilesData, error: profilesError } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url")
+            .in("id", assigneeIds);
+
+          if (profilesError) throw profilesError;
+          assigneeProfiles = profilesData || [];
+        }
+
+        // Combine tasks with their tags and assignee info
+        const tasksWithDetails = tasksData.map((task) => {
           const taskTags = tagsData
-            .filter((tag) => tag.task_id === task.id)
-            .map((tag) => tag.tag);
+            ? tagsData
+                .filter((tag) => tag.task_id === task.id)
+                .map((tag) => tag.tag)
+            : [];
+
+          // Find assignee profile
+          const assigneeProfile = task.assignee_id
+            ? assigneeProfiles.find((profile) => profile.id === task.assignee_id)
+            : null;
+
+          // Create assignee object
+          const assignee = assigneeProfile
+            ? {
+                name: assigneeProfile.full_name || "Usuário",
+                avatar: assigneeProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${assigneeProfile.id}`,
+              }
+            : {
+                name: "Não atribuído",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=default",
+              };
 
           return {
             ...task,
             tags: taskTags,
+            assignee,
+            // Format date for frontend
+            dueDate: task.due_date || new Date().toISOString(),
           };
         });
 
-        setTasks(tasksWithTags);
+        setTasks(tasksWithDetails);
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("An unknown error occurred"),
@@ -276,12 +314,19 @@ export function useTasks() {
 
   async function addTask(task: any) {
     try {
-      const { tags, ...taskData } = task;
+      const { tags, assignee, ...taskData } = task;
+
+      // Convert assignee object to assignee_id if needed
+      const taskToInsert = {
+        ...taskData,
+        // If assignee is an object with an id property, use that id
+        assignee_id: assignee?.id || null,
+      };
 
       // Insert task
       const { data: newTask, error: taskError } = await supabase
         .from("tasks")
-        .insert(taskData)
+        .insert(taskToInsert)
         .select()
         .single();
 
@@ -301,9 +346,18 @@ export function useTasks() {
         if (tagsError) throw tagsError;
       }
 
-      const taskWithTags = { ...newTask, tags: tags || [] };
-      setTasks((prev) => [...prev, taskWithTags]);
-      return taskWithTags;
+      const taskWithDetails = { 
+        ...newTask, 
+        tags: tags || [],
+        assignee: assignee || {
+          name: "Não atribuído",
+          avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=default",
+        },
+        dueDate: newTask.due_date || new Date().toISOString(),
+      };
+      
+      setTasks((prev) => [...prev, taskWithDetails]);
+      return taskWithDetails;
     } catch (err) {
       setError(
         err instanceof Error ? err : new Error("An unknown error occurred"),
@@ -314,12 +368,19 @@ export function useTasks() {
 
   async function updateTask(id: string, updates: any) {
     try {
-      const { tags, ...taskData } = updates;
+      const { tags, assignee, ...taskData } = updates;
+
+      // Convert assignee object to assignee_id if needed
+      const taskToUpdate = {
+        ...taskData,
+        // If assignee is an object with an id property, use that id
+        assignee_id: assignee?.id || null,
+      };
 
       // Update task
       const { data: updatedTask, error: taskError } = await supabase
         .from("tasks")
-        .update(taskData)
+        .update(taskToUpdate)
         .eq("id", id)
         .select()
         .single();
@@ -358,13 +419,22 @@ export function useTasks() {
               ...task,
               ...taskData,
               tags: tags !== undefined ? tags : task.tags,
+              assignee: assignee || task.assignee,
             };
           }
           return task;
         }),
       );
 
-      return { ...updatedTask, tags: tags !== undefined ? tags : [] };
+      return { 
+        ...updatedTask, 
+        tags: tags !== undefined ? tags : [], 
+        assignee: assignee || {
+          name: "Não atribuído",
+          avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=default",
+        },
+        dueDate: updatedTask.due_date || new Date().toISOString(),
+      };
     } catch (err) {
       setError(
         err instanceof Error ? err : new Error("An unknown error occurred"),

@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+'use client';
+
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -51,6 +53,13 @@ const AddCategoryDialog = ({
   onSubmit = () => {},
   isDarkMode = true,
 }: AddCategoryDialogProps) => {
+  const [mounted, setMounted] = useState(false);
+  
+  // Verificar se estamos no cliente
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const form = useForm<{ name: string }>({
     defaultValues: {
       name: "",
@@ -67,10 +76,17 @@ const AddCategoryDialog = ({
     form.setValue("name", suggestion);
   };
 
+  // Não renderizar nada no servidor
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`sm:max-w-[500px] ${isDarkMode ? "bg-black border-blue-700" : "bg-white border-[#B0BEC5]"}`}
+        className={`sm:max-w-[425px] ${
+          isDarkMode ? "bg-black border-blue-700" : "bg-white border-[#B0BEC5]"
+        }`}
       >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import ToolsOverview from "@/components/dashboard/ToolsOverview";
@@ -13,6 +13,7 @@ import DashboardSummary from "@/components/dashboard/DashboardSummary";
 
 export default function Home() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [activePath, setActivePath] = useState("/");
   const [activeView, setActiveView] = useState<
     "home" | "tools" | "documents" | "tasks"
@@ -39,6 +40,27 @@ export default function Home() {
       };
     }
   }, []);
+
+  // Use searchParams em vez de router.query
+  useEffect(() => {
+    // Exemplo de como usar searchParams
+    const view = searchParams?.get("view");
+    if (view) {
+      switch (view) {
+        case "tools":
+          setActiveView("tools");
+          break;
+        case "documents":
+          setActiveView("documents");
+          break;
+        case "tasks":
+          setActiveView("tasks");
+          break;
+        default:
+          setActiveView("home");
+      }
+    }
+  }, [searchParams]);
 
   // Mock data for tools
   const [tools, setTools] = useState([
@@ -127,8 +149,7 @@ export default function Home() {
     } else if (path === "/tasks") {
       router.push("/tasks");
     } else if (path === "/settings") {
-      // Implementar quando a página de configurações estiver disponível
-      alert("Página de configurações em desenvolvimento");
+      router.push("/settings");
     } else if (path === "/help") {
       // Implementar quando a página de ajuda estiver disponível
       alert("Página de ajuda em desenvolvimento");

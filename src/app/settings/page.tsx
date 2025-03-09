@@ -4,16 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
-import TasksOverview from "@/components/tasks/TasksOverview";
-import { useTasks } from "@/hooks/useSupabase";
+import SettingsOverview from "@/components/settings/SettingsOverview";
 
-export default function TasksPage() {
+export default function SettingsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [activePath, setActivePath] = useState("/tasks");
+  const [activePath, setActivePath] = useState("/settings");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const { tasks, loading, error, addTask, updateTask, deleteTask } = useTasks();
 
   // Initialize theme from localStorage on component mount
   useEffect(() => {
@@ -26,9 +24,9 @@ export default function TasksPage() {
   // Use searchParams em vez de router.query
   useEffect(() => {
     // Exemplo de como usar searchParams
-    const status = searchParams?.get("status");
-    if (status) {
-      // Implementar lógica de filtragem por status
+    const section = searchParams?.get("section");
+    if (section) {
+      // Implementar lógica de navegação para seção específica
     }
   }, [searchParams]);
 
@@ -41,10 +39,10 @@ export default function TasksPage() {
     } else if (path === "/documents") {
       router.push("/documents");
     } else if (path === "/tasks") {
-      // Já estamos na página de tarefas
-      return;
+      router.push("/tasks");
     } else if (path === "/settings") {
-      router.push("/settings");
+      // Já estamos na página de configurações
+      return;
     } else if (path === "/help") {
       // Implementar quando a página de ajuda estiver disponível
       alert("Página de ajuda em desenvolvimento");
@@ -61,6 +59,16 @@ export default function TasksPage() {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
     localStorage.setItem("theme", newTheme ? "dark" : "light");
+  };
+
+  // Função para salvar configurações
+  const handleSaveSettings = (settings: any) => {
+    console.log("Salvando configurações:", settings);
+    // Aqui você implementaria a lógica para salvar as configurações no backend
+    // Por exemplo, usando uma chamada API ou Supabase
+    
+    // Simulando um salvamento bem-sucedido
+    alert("Configurações salvas com sucesso!");
   };
 
   return (
@@ -88,24 +96,12 @@ export default function TasksPage() {
 
         {/* Main Content Area */}
         <div className="flex-1 overflow-hidden">
-          <TasksOverview
-            tasks={loading ? [] : tasks}
-            onTaskAdd={(task) => {
-              console.log("Add task", task);
-              addTask(task);
-            }}
-            onTaskEdit={(id, updates) => {
-              console.log("Edit task", id, updates);
-              updateTask(id, updates);
-            }}
-            onTaskDelete={(id) => {
-              console.log("Delete task", id);
-              deleteTask(id);
-            }}
+          <SettingsOverview 
             isDarkMode={isDarkMode}
+            onSaveSettings={handleSaveSettings}
           />
         </div>
       </div>
     </main>
   );
-}
+} 

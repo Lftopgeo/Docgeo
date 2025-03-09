@@ -3,15 +3,15 @@ echo Encerrando processos Node.js...
 taskkill /F /IM node.exe /T
 
 echo Limpando cache do Next.js...
-if exist .next rmdir /S /Q .next
+rmdir /S /Q .next 2>nul
 
 echo Limpando cache do Node.js...
-if exist node_modules\.cache rmdir /S /Q node_modules\.cache
+rmdir /S /Q node_modules\.cache 2>nul
 
 echo Instalando dependências...
-call npm install
+npm install
 
 echo Iniciando servidor em uma porta específica...
-call npx next dev -p 3002
+npm run dev
 
 pause 

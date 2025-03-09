@@ -1,4 +1,6 @@
-import React from "react";
+'use client';
+
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -36,6 +38,12 @@ const AddSubcategoryDialog = ({
   categoryName = "",
   isDarkMode = true,
 }: AddSubcategoryDialogProps) => {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const form = useForm<{ name: string }>({
     defaultValues: {
       name: "",
@@ -46,6 +54,10 @@ const AddSubcategoryDialog = ({
     onSubmit(data);
     form.reset();
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
