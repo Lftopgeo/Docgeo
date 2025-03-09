@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import TasksOverview from "@/components/tasks/TasksOverview";
 import { useTasks } from "@/hooks/useSupabase";
 
 export default function TasksPage() {
+  const router = useRouter();
   const [activePath, setActivePath] = useState("/tasks");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -14,15 +16,35 @@ export default function TasksPage() {
 
   // Initialize theme from localStorage on component mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem("ai_tools_dashboard_theme");
-    if (savedTheme !== null) {
-      setIsDarkMode(JSON.parse(savedTheme));
+    // Verificar se window está definido (client-side) antes de acessar localStorage
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem("ai_tools_dashboard_theme");
+      if (savedTheme !== null) {
+        setIsDarkMode(JSON.parse(savedTheme));
+      }
     }
   }, []);
 
   // Handlers
   const handleNavigate = (path: string) => {
-    window.location.href = path;
+    if (path === "/") {
+      router.push("/");
+    } else if (path === "/ai-tools") {
+      router.push("/ai-tools");
+    } else if (path === "/documents") {
+      router.push("/documents");
+    } else if (path === "/tasks") {
+      // Já estamos na página de tarefas
+      return;
+    } else if (path === "/settings") {
+      // Implementar quando a página de configurações estiver disponível
+      alert("Página de configurações em desenvolvimento");
+    } else if (path === "/help") {
+      // Implementar quando a página de ajuda estiver disponível
+      alert("Página de ajuda em desenvolvimento");
+    } else {
+      router.push(path);
+    }
   };
 
   const handleSearch = (query: string) => {

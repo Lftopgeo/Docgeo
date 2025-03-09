@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import ToolsOverview from "@/components/dashboard/ToolsOverview";
@@ -11,6 +12,7 @@ import ToolDetailsDialog from "@/components/dashboard/ToolDetailsDialog";
 import DashboardSummary from "@/components/dashboard/DashboardSummary";
 
 export default function Home() {
+  const router = useRouter();
   const [activePath, setActivePath] = useState("/");
   const [activeView, setActiveView] = useState<
     "home" | "tools" | "documents" | "tasks"
@@ -22,17 +24,20 @@ export default function Home() {
 
   // Initialize theme from localStorage on component mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem("ai_tools_dashboard_theme");
-    if (savedTheme !== null) {
-      setIsDarkMode(JSON.parse(savedTheme));
+    // Verificar se window está definido (client-side) antes de acessar localStorage
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem("ai_tools_dashboard_theme");
+      if (savedTheme !== null) {
+        setIsDarkMode(JSON.parse(savedTheme));
+      }
+      
+      // Add a class to the body for page transitions
+      document.body.classList.add('animate-fade-in');
+      
+      return () => {
+        document.body.classList.remove('animate-fade-in');
+      };
     }
-    
-    // Add a class to the body for page transitions
-    document.body.classList.add('animate-fade-in');
-    
-    return () => {
-      document.body.classList.remove('animate-fade-in');
-    };
   }, []);
 
   // Mock data for tools
@@ -112,11 +117,23 @@ export default function Home() {
 
   // Handlers
   const handleNavigate = (path: string) => {
-    if (path !== "/") {
-      window.location.href = path;
-    } else {
+    if (path === "/") {
       setActivePath(path);
       setActiveView("home");
+    } else if (path === "/ai-tools") {
+      router.push("/ai-tools");
+    } else if (path === "/documents") {
+      router.push("/documents");
+    } else if (path === "/tasks") {
+      router.push("/tasks");
+    } else if (path === "/settings") {
+      // Implementar quando a página de configurações estiver disponível
+      alert("Página de configurações em desenvolvimento");
+    } else if (path === "/help") {
+      // Implementar quando a página de ajuda estiver disponível
+      alert("Página de ajuda em desenvolvimento");
+    } else {
+      router.push(path);
     }
   };
 

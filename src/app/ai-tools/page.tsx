@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import ToolsOverview from "@/components/dashboard/ToolsOverview";
@@ -70,6 +71,7 @@ function adaptToolForSupabase(
 }
 
 export default function AIToolsPage() {
+  const router = useRouter();
   const [activePath, setActivePath] = useState("/ai-tools");
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddToolDialogOpen, setIsAddToolDialogOpen] = useState(false);
@@ -165,7 +167,24 @@ export default function AIToolsPage() {
 
   // Handlers
   const handleNavigate = (path: string) => {
-    window.location.href = path;
+    if (path === "/") {
+      router.push("/");
+    } else if (path === "/ai-tools") {
+      // Já estamos na página de ferramentas de IA
+      return;
+    } else if (path === "/documents") {
+      router.push("/documents");
+    } else if (path === "/tasks") {
+      router.push("/tasks");
+    } else if (path === "/settings") {
+      // Implementar quando a página de configurações estiver disponível
+      alert("Página de configurações em desenvolvimento");
+    } else if (path === "/help") {
+      // Implementar quando a página de ajuda estiver disponível
+      alert("Página de ajuda em desenvolvimento");
+    } else {
+      router.push(path);
+    }
   };
 
   const handleSearch = (query: string) => {
