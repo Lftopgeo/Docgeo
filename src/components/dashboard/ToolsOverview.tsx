@@ -19,6 +19,7 @@ interface ToolsOverviewProps {
   onToolEdit?: (id: string, updates: Partial<Tool>) => void;
   onToolDelete?: (id: string) => void;
   isDarkMode?: boolean;
+  onAddNewTool?: () => void;
 }
 
 const ToolsOverview = ({
@@ -94,12 +95,12 @@ const ToolsOverview = ({
   onToolEdit = () => {},
   onToolDelete = () => {},
   isDarkMode = true,
+  onAddNewTool = () => {},
 }: ToolsOverviewProps) => {
   // State for filtering and viewing tools
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
-  const [isAddToolDialogOpen, setIsAddToolDialogOpen] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState<string | null>(null);
 
   // Filter tools based on search query, category, and status
@@ -137,7 +138,7 @@ const ToolsOverview = ({
   };
 
   const handleAddNewTool = () => {
-    setIsAddToolDialogOpen(true);
+    onAddNewTool();
   };
 
   const handleToolClick = (id: string) => {
@@ -146,15 +147,6 @@ const ToolsOverview = ({
 
   const handleCloseToolDetails = () => {
     setSelectedToolId(null);
-  };
-
-  const handleCloseAddToolDialog = () => {
-    setIsAddToolDialogOpen(false);
-  };
-
-  const handleToolSubmit = (tool: Omit<Tool, "id">) => {
-    onToolAdd(tool);
-    setIsAddToolDialogOpen(false);
   };
 
   return (

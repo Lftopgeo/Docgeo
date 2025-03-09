@@ -34,11 +34,10 @@ const TasksGrid = ({
   return (
     <div
       className={
-        `p-8 rounded-lg w-full ${isDarkMode ? "bg-black" : "bg-[#FAFAFA]"}` +
-        " w-[304] h-56"
+        `p-8 rounded-lg w-full ${isDarkMode ? "bg-[#0F172A]" : "bg-[#FAFAFA]"}`
       }
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-16 gap-y-14 justify-items-center h-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-16 gap-y-14 justify-items-center">
         {tasks.map((task) => (
           <TaskCard
             key={task.id}
@@ -60,12 +59,12 @@ const TasksGrid = ({
       {tasks.length === 0 && (
         <div className="flex flex-col items-center justify-center h-64 text-center">
           <p
-            className={`text-xl mb-4 ${isDarkMode ? "text-white" : "text-[#212121]"}`}
+            className={`text-xl mb-4 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
           >
-            No tasks found
+            Nenhuma tarefa encontrada
           </p>
-          <p className={isDarkMode ? "text-white" : "text-[#212121]"}>
-            Try adjusting your filters or add a new task to get started
+          <p className={isDarkMode ? "text-gray-400" : "text-gray-500"}>
+            Ajuste os filtros ou adicione uma nova tarefa para começar
           </p>
         </div>
       )}

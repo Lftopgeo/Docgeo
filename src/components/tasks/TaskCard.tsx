@@ -75,75 +75,94 @@ const TaskCard = ({
       case "todo":
         return {
           icon: <AlertCircle className="h-4 w-4" />,
-          color: isDarkMode ? "bg-blue-600" : "bg-[#64B5F6]",
+          color: isDarkMode ? "bg-blue-600/80" : "bg-blue-500/70",
+          textColor: isDarkMode ? "text-blue-300" : "text-blue-700",
         };
       case "in-progress":
         return {
           icon: <Clock className="h-4 w-4" />,
-          color: isDarkMode ? "bg-yellow-600" : "bg-[#FFC107]",
+          color: isDarkMode ? "bg-yellow-600/80" : "bg-yellow-500/70",
+          textColor: isDarkMode ? "text-yellow-300" : "text-yellow-700",
         };
       case "completed":
         return {
           icon: <CheckCircle className="h-4 w-4" />,
-          color: isDarkMode ? "bg-green-600" : "bg-[#4CAF50]",
+          color: isDarkMode ? "bg-green-600/80" : "bg-green-500/70",
+          textColor: isDarkMode ? "text-green-300" : "text-green-700",
         };
       case "blocked":
         return {
           icon: <XCircle className="h-4 w-4" />,
-          color: isDarkMode ? "bg-red-600" : "bg-[#E57373]",
+          color: isDarkMode ? "bg-red-600/80" : "bg-red-500/70",
+          textColor: isDarkMode ? "text-red-300" : "text-red-700",
         };
       default:
         return {
           icon: <AlertCircle className="h-4 w-4" />,
-          color: "bg-gray-600",
+          color: "bg-gray-600/80",
+          textColor: "text-gray-300",
         };
     }
   };
 
   // Function to get priority color
-  const getPriorityColor = (priority: string) => {
+  const getPriorityInfo = (priority: string) => {
     switch (priority) {
       case "low":
-        return isDarkMode ? "bg-green-600" : "bg-[#66BB6A]";
+        return {
+          color: isDarkMode ? "bg-green-600/80" : "bg-green-500/70",
+          textColor: isDarkMode ? "text-green-300" : "text-green-700",
+        };
       case "medium":
-        return isDarkMode ? "bg-blue-600" : "bg-[#64B5F6]";
+        return {
+          color: isDarkMode ? "bg-blue-600/80" : "bg-blue-500/70",
+          textColor: isDarkMode ? "text-blue-300" : "text-blue-700",
+        };
       case "high":
-        return isDarkMode ? "bg-orange-600" : "bg-[#FF8C00]";
+        return {
+          color: isDarkMode ? "bg-orange-600/80" : "bg-orange-500/70",
+          textColor: isDarkMode ? "text-orange-300" : "text-orange-700",
+        };
       case "urgent":
-        return isDarkMode ? "bg-red-600" : "bg-[#F44336]";
+        return {
+          color: isDarkMode ? "bg-red-600/80" : "bg-red-500/70",
+          textColor: isDarkMode ? "text-red-300" : "text-red-700",
+        };
       default:
-        return "bg-gray-600";
+        return {
+          color: "bg-gray-600/80",
+          textColor: "text-gray-300",
+        };
     }
   };
 
   const statusInfo = getStatusInfo(status);
-  const priorityColor = getPriorityColor(priority);
+  const priorityInfo = getPriorityInfo(priority);
 
   return (
     <Card
-      className={
-        ` overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 ${isDarkMode ? "bg-[#0F172A] border-blue-600" : "bg-white border-[#B0BEC5]"} ` +
-        " gap-y-0 mx-px px-1 py-0 w-[30] w-[304] h-56 container w-[120] w-[120] w-[200PX] w-[100PX] container w-[120] w-[170] w-9/12 container max-w-[150] w-[150] container"
-      }
+      className={`overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 w-full max-w-[300px] h-auto ${
+        isDarkMode ? "bg-[#0F172A] border-blue-700/50" : "bg-white border-[#B0BEC5]/50"
+      }`}
     >
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <CardTitle
-              className={`text-lg font-bold truncate ${isDarkMode ? "text-white" : "text-[#212121]"}`}
+              className={`text-lg font-bold truncate ${isDarkMode ? "text-gray-200" : "text-gray-800"}`}
             >
               {title}
             </CardTitle>
-            <CardDescription className="text-xs text-muted-foreground flex items-center gap-1">
-              <Badge className={`${statusInfo.color} px-2 py-0.5 text-xs`}>
+            <CardDescription className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+              <Badge className={`${statusInfo.color} ${statusInfo.textColor} px-2 py-0.5 text-xs`}>
                 <span className="flex items-center gap-1">
                   {statusInfo.icon}
                   {status.charAt(0).toUpperCase() +
                     status.slice(1).replace("-", " ")}
                 </span>
               </Badge>
-              <span>•</span>
-              <Badge className={`${priorityColor} px-2 py-0.5 text-xs`}>
+              <span className={isDarkMode ? "text-gray-500" : "text-gray-400"}>•</span>
+              <Badge className={`${priorityInfo.color} ${priorityInfo.textColor} px-2 py-0.5 text-xs`}>
                 {priority.charAt(0).toUpperCase() + priority.slice(1)}
               </Badge>
             </CardDescription>
@@ -158,18 +177,18 @@ const TaskCard = ({
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={onClick}>
                 <CheckCircle className="mr-2 h-4 w-4" />
-                View Details
+                Ver Detalhes
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onEdit}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit Task
+                Editar Tarefa
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={onDelete}
                 className="text-destructive focus:text-destructive"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                Excluir
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -179,7 +198,7 @@ const TaskCard = ({
         <div className="h-full flex flex-col">
           <div className="flex-1 overflow-hidden">
             <p
-              className={`text-sm line-clamp-3 ${isDarkMode ? "text-white" : "text-[#212121]"}`}
+              className={`text-sm line-clamp-3 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
             >
               {description}
             </p>
@@ -189,7 +208,11 @@ const TaskCard = ({
               <Badge
                 key={index}
                 variant="outline"
-                className="bg-blue-900/30 text-blue-400 border-blue-700 text-xs"
+                className={`${
+                  isDarkMode
+                    ? "bg-blue-900/30 text-blue-300 border-blue-700/50"
+                    : "bg-blue-100 text-blue-700 border-blue-300"
+                } text-xs`}
               >
                 {tag}
               </Badge>
@@ -206,13 +229,13 @@ const TaskCard = ({
             </AvatarFallback>
           </Avatar>
           <span
-            className={`text-xs truncate max-w-[100px] ${isDarkMode ? "text-white" : "text-[#212121]"}`}
+            className={`text-xs truncate max-w-[100px] ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
           >
             {assignee.name}
           </span>
         </div>
         <div
-          className={`flex items-center text-xs ${isDarkMode ? "text-white" : "text-[#212121]"}`}
+          className={`flex items-center text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
         >
           <Calendar className="h-3 w-3 mr-1" />
           {formatDate(dueDate)}

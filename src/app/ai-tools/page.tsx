@@ -226,6 +226,11 @@ export default function AIToolsPage() {
     localStorage.setItem("ai_tools_dashboard_theme", JSON.stringify(newTheme));
   };
 
+  // Função para abrir o modal de adicionar ferramenta
+  const handleOpenAddToolDialog = () => {
+    setIsAddToolDialogOpen(true);
+  };
+
   return (
     <main
       className={`flex h-screen overflow-hidden ${isDarkMode ? "dark-theme bg-[#0F172A] text-white" : "light-theme bg-[#FAFAFA] text-[#212121]"}`}
@@ -268,6 +273,7 @@ export default function AIToolsPage() {
             onToolEdit={handleEditTool}
             onToolDelete={handleDeleteTool}
             isDarkMode={isDarkMode}
+            onAddNewTool={handleOpenAddToolDialog}
           />
         </div>
       </div>

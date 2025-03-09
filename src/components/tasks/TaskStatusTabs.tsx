@@ -49,6 +49,26 @@ const TaskStatusTabs = ({
     }
   };
 
+  // Função para obter a cor do texto com base no modo escuro/claro
+  const getTextColor = () => {
+    return isDarkMode ? "text-gray-300" : "text-gray-700";
+  };
+
+  // Função para obter a cor do texto ativo com base no modo escuro/claro
+  const getActiveTextColor = () => {
+    return isDarkMode ? "text-white" : "text-[#FF6B00]";
+  };
+
+  // Função para obter a cor de fundo do badge com base no modo escuro/claro
+  const getBadgeColor = () => {
+    return isDarkMode ? "bg-[#FF6B00]/20" : "bg-[#FF6B00]/10";
+  };
+
+  // Função para obter a cor do texto do badge com base no modo escuro/claro
+  const getBadgeTextColor = () => {
+    return isDarkMode ? "text-[#FF6B00]" : "text-[#FF6B00]";
+  };
+
   return (
     <div
       className={`w-full py-2 border-b ${isDarkMode ? "bg-[#0F172A] border-blue-700" : "bg-[#FAFAFA] border-[#B0BEC5]"}`}
@@ -64,51 +84,51 @@ const TaskStatusTabs = ({
         >
           <TabsTrigger
             value="all"
-            className="flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:text-white text-white"
+            className={`flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:${getActiveTextColor()} ${getTextColor()}`}
           >
             {getIcon("all")}
             <span>Todas Tarefas</span>
-            <span className="ml-2 rounded-full bg-[#FF6B00]/20 px-2 py-0.5 text-xs text-white">
+            <span className={`ml-2 rounded-full ${getBadgeColor()} px-2 py-0.5 text-xs ${getBadgeTextColor()}`}>
               {taskCounts.all}
             </span>
           </TabsTrigger>
           <TabsTrigger
             value="todo"
-            className="flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:text-white text-white"
+            className={`flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:${getActiveTextColor()} ${getTextColor()}`}
           >
             {getIcon("todo")}
             <span>A Fazer</span>
-            <span className="ml-2 rounded-full bg-[#FF6B00]/20 px-2 py-0.5 text-xs text-white">
+            <span className={`ml-2 rounded-full ${getBadgeColor()} px-2 py-0.5 text-xs ${getBadgeTextColor()}`}>
               {taskCounts.todo}
             </span>
           </TabsTrigger>
           <TabsTrigger
             value="in-progress"
-            className="flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:text-white text-white"
+            className={`flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:${getActiveTextColor()} ${getTextColor()}`}
           >
             {getIcon("in-progress")}
             <span>Em Andamento</span>
-            <span className="ml-2 rounded-full bg-[#FF6B00]/20 px-2 py-0.5 text-xs text-white">
+            <span className={`ml-2 rounded-full ${getBadgeColor()} px-2 py-0.5 text-xs ${getBadgeTextColor()}`}>
               {taskCounts["in-progress"]}
             </span>
           </TabsTrigger>
           <TabsTrigger
             value="completed"
-            className="flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:text-white text-white"
+            className={`flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:${getActiveTextColor()} ${getTextColor()}`}
           >
             {getIcon("completed")}
             <span>Concluído</span>
-            <span className="ml-2 rounded-full bg-[#FF6B00]/20 px-2 py-0.5 text-xs text-white">
+            <span className={`ml-2 rounded-full ${getBadgeColor()} px-2 py-0.5 text-xs ${getBadgeTextColor()}`}>
               {taskCounts.completed}
             </span>
           </TabsTrigger>
           <TabsTrigger
             value="blocked"
-            className="flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:text-white text-white"
+            className={`flex-1 flex items-center justify-center data-[state=active]:bg-[#FF6B00]/20 data-[state=active]:${getActiveTextColor()} ${getTextColor()}`}
           >
             {getIcon("blocked")}
             <span>Bloqueado</span>
-            <span className="ml-2 rounded-full bg-[#FF6B00]/20 px-2 py-0.5 text-xs text-white">
+            <span className={`ml-2 rounded-full ${getBadgeColor()} px-2 py-0.5 text-xs ${getBadgeTextColor()}`}>
               {taskCounts.blocked}
             </span>
           </TabsTrigger>
