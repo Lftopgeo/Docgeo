@@ -316,8 +316,23 @@ const DocumentsOverview = ({
 
   // Handlers para documentos
   const handleDocumentEdit = async (id: string, updates: Partial<Document> = {}) => {
-    // Implementação existente ou chamar a função de callback
-    onDocumentEdit(id, updates);
+    // Se não temos updates, significa que estamos apenas abrindo o diálogo de edição
+    if (Object.keys(updates).length === 0) {
+      // Encontrar o documento pelo ID
+      const documentToEdit = documents.find(doc => doc.id === id);
+      if (documentToEdit) {
+        // Definir o documento selecionado para edição
+        setSelectedDocumentForEdit(documentToEdit);
+        // Abrir o diálogo de edição
+        setIsEditDocumentDialogOpen(true);
+      } else {
+        console.error(`Documento com ID ${id} não encontrado`);
+      }
+    } else {
+      // Se temos updates, significa que estamos salvando as alterações
+      // Chamar a função de callback
+      onDocumentEdit(id, updates);
+    }
   };
 
   const handleDocumentDelete = async (id: string) => {

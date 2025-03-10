@@ -67,8 +67,7 @@ export default function SettingsPage() {
     // Aqui você implementaria a lógica para salvar as configurações no backend
     // Por exemplo, usando uma chamada API ou Supabase
     
-    // Simulando um salvamento bem-sucedido
-    alert("Configurações salvas com sucesso!");
+    // O toast de sucesso agora é exibido pelo componente SettingsOverview
   };
 
   return (

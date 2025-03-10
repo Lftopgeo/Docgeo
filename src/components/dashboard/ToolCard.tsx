@@ -27,6 +27,7 @@ import {
   FileText, 
   Mic 
 } from "lucide-react";
+import { ConfirmDeleteDialog } from "../ui/confirm-delete-dialog";
 
 interface ToolCardProps {
   id?: string;
@@ -67,6 +68,11 @@ const ToolCard = ({
   onDelete = () => {},
   isDarkMode = true,
 }: ToolCardProps) => {
+  const handleDelete = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    onDelete();
+  };
+
   return (
     <Card
       className="w-[300px] overflow-hidden flex flex-col card-gradient hover-lift transition-all animate-fade-in"
@@ -103,13 +109,23 @@ const ToolCard = ({
                 <Edit className="mr-2 h-4 w-4" />
                 Editar Ferramenta
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => { e.stopPropagation(); onDelete(); }}
-                className="text-destructive focus:text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Excluir
-              </DropdownMenuItem>
+              <ConfirmDeleteDialog
+                itemName={name}
+                itemType="ferramenta"
+                onConfirm={handleDelete}
+                isDarkMode={isDarkMode}
+                trigger={
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onSelect={(e) => {
+                      e.preventDefault();
+                    }}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Excluir
+                  </DropdownMenuItem>
+                }
+              />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

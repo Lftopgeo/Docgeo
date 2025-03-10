@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClientOnly } from "@/components/ClientOnly";
 import { TempoInit } from "@/components/tempo-init";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
         {children}
         <ClientOnly>
           <TempoInit />
+          <Toaster />
         </ClientOnly>
       </body>
     </html>

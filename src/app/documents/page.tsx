@@ -156,6 +156,85 @@ export default function DocumentsPage() {
       return false;
     }
   };
+
+  // Função para lidar com a edição de documentos
+  const handleDocumentEdit = async (id: string, updates: Partial<Document>) => {
+    try {
+      console.log("Iniciando edição do documento:", id);
+      
+      // Preparar os dados para envio
+      const requestData = {
+        id,
+        ...updates
+      };
+      
+      // Enviar para a API
+      console.log("Enviando requisição para a API...");
+      const response = await fetch('/api/documents', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+      
+      // Verificar se a resposta é OK
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Erro desconhecido" }));
+        console.error("Erro na resposta da API:", response.status, errorData);
+        throw new Error(errorData.error || `Erro ${response.status}: Falha ao editar documento`);
+      }
+      
+      // Processar a resposta
+      const data = await response.json();
+      console.log("Documento editado com sucesso:", data);
+      
+      // Recarregar a página para mostrar as alterações
+      window.location.reload();
+      return true;
+    } catch (error: any) {
+      console.error('Erro ao editar documento:', error);
+      alert(`Erro ao editar documento: ${error.message || "Falha desconhecida"}`);
+      return false;
+    }
+  };
+
+  // Função para lidar com a exclusão de documentos
+  const handleDocumentDelete = async (id: string) => {
+    try {
+      // Confirmar a exclusão
+      if (!confirm("Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita.")) {
+        return false;
+      }
+      
+      console.log("Iniciando exclusão do documento:", id);
+      
+      // Enviar para a API
+      console.log("Enviando requisição para a API...");
+      const response = await fetch(`/api/documents?id=${id}`, {
+        method: 'DELETE',
+      });
+      
+      // Verificar se a resposta é OK
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Erro desconhecido" }));
+        console.error("Erro na resposta da API:", response.status, errorData);
+        throw new Error(errorData.error || `Erro ${response.status}: Falha ao excluir documento`);
+      }
+      
+      // Processar a resposta
+      const data = await response.json();
+      console.log("Documento excluído com sucesso:", data);
+      
+      // Recarregar a página para atualizar a lista
+      window.location.reload();
+      return true;
+    } catch (error: any) {
+      console.error('Erro ao excluir documento:', error);
+      alert(`Erro ao excluir documento: ${error.message || "Falha desconhecida"}`);
+      return false;
+    }
+  };
     
   // Renderizar um fallback enquanto carrega
   if (isLoading) {
@@ -200,10 +279,8 @@ export default function DocumentsPage() {
               console.log("Add subcategory", categoryId, subcategory)
             }
             onDocumentAdd={handleDocumentAdd}
-            onDocumentEdit={(id, updates) =>
-              console.log("Edit document", id, updates)
-            }
-            onDocumentDelete={(id) => console.log("Delete document", id)}
+            onDocumentEdit={handleDocumentEdit}
+            onDocumentDelete={handleDocumentDelete}
             isDarkMode={isDarkMode}
           />
         </div>

@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "../ui/dialog";
+import { ConfirmDeleteDialog } from "../ui/confirm-delete-dialog";
 
 interface DocumentCardProps {
   id: string;
@@ -157,8 +158,8 @@ const DocumentCard = ({
     onEdit();
   };
 
-  const handleDeleteDocument = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleDeleteDocument = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     console.log("Excluindo documento:", id);
     onDelete();
   };
@@ -222,13 +223,23 @@ const DocumentCard = ({
                         <Edit className="mr-2 h-4 w-4" />
                         Editar
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={handleDeleteDocument}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Excluir
-                      </DropdownMenuItem>
+                      <ConfirmDeleteDialog
+                        itemName={title}
+                        itemType="documento"
+                        onConfirm={handleDeleteDocument}
+                        isDarkMode={isDarkMode}
+                        trigger={
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onSelect={(e) => {
+                              e.preventDefault();
+                            }}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Excluir
+                          </DropdownMenuItem>
+                        }
+                      />
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={handleShowDetails}>
                         <Info className="mr-2 h-4 w-4" />

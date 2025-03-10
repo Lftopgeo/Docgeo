@@ -26,6 +26,7 @@ import {
   AlertCircle,
   XCircle,
 } from "lucide-react";
+import { ConfirmDeleteDialog } from "../ui/confirm-delete-dialog";
 
 interface TaskCardProps {
   id: string;
@@ -139,6 +140,11 @@ const TaskCard = ({
   const statusInfo = getStatusInfo(status);
   const priorityInfo = getPriorityInfo(priority);
 
+  const handleDelete = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    onDelete();
+  };
+
   return (
     <Card
       className={`overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 w-full max-w-[300px] h-auto ${
@@ -183,13 +189,23 @@ const TaskCard = ({
                 <Edit className="mr-2 h-4 w-4" />
                 Editar Tarefa
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={onDelete}
-                className="text-destructive focus:text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Excluir
-              </DropdownMenuItem>
+              <ConfirmDeleteDialog
+                itemName={title}
+                itemType="tarefa"
+                onConfirm={handleDelete}
+                isDarkMode={isDarkMode}
+                trigger={
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onSelect={(e) => {
+                      e.preventDefault();
+                    }}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Excluir
+                  </DropdownMenuItem>
+                }
+              />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

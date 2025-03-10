@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AlertCircle, Bell, Camera, Globe, Lock, Mail, Palette, Shield, Upload, User, Users } from "lucide-react";
+import { AlertCircle, Bell, Camera, CheckCircle, Globe, Lock, Mail, Palette, Shield, Upload, User, Users } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SettingsOverviewProps {
   isDarkMode?: boolean;
@@ -22,6 +23,12 @@ const SettingsOverview = ({
 }: SettingsOverviewProps) => {
   // Referência para o input de arquivo
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Hook para exibir toasts
+  const { toast } = useToast();
+  
+  // Estado para controlar o carregamento durante o salvamento
+  const [isSaving, setIsSaving] = useState(false);
   
   // Estados para as diferentes configurações
   const [generalSettings, setGeneralSettings] = useState({
@@ -87,15 +94,56 @@ const SettingsOverview = ({
   };
 
   // Função para salvar todas as configurações
-  const handleSaveAll = () => {
-    const allSettings = {
-      general: generalSettings,
-      account: accountSettings,
-      appearance: appearanceSettings,
-      security: securitySettings,
-    };
-    
-    onSaveSettings(allSettings);
+  const handleSaveAll = async () => {
+    try {
+      setIsSaving(true);
+      
+      const allSettings = {
+        general: generalSettings,
+        account: accountSettings,
+        appearance: appearanceSettings,
+        security: securitySettings,
+      };
+      
+      // Chamar a API para salvar as configurações
+      const response = await fetch('/api/settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(allSettings),
+      });
+      
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Erro ao salvar configurações');
+      }
+      
+      // Chamar o callback onSaveSettings
+      onSaveSettings(allSettings);
+      
+      // Exibir toast de sucesso
+      toast({
+        title: "Configurações salvas",
+        description: "Suas configurações foram salvas com sucesso.",
+        variant: "default",
+        duration: 3000,
+      });
+      
+    } catch (error) {
+      console.error('Erro ao salvar configurações:', error);
+      
+      // Exibir toast de erro
+      toast({
+        title: "Erro ao salvar",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao salvar as configurações.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -475,8 +523,22 @@ const SettingsOverview = ({
           <Button variant="outline" className={isDarkMode ? "border-blue-700/50" : "border-gray-300"}>
             Cancelar
           </Button>
-          <Button className="bg-[#FF6B00] hover:bg-[#FF8C3F]" onClick={handleSaveAll}>
-            Salvar Alterações
+          <Button 
+            className="bg-[#FF6B00] hover:bg-[#FF8C3F] flex items-center gap-2" 
+            onClick={handleSaveAll}
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                Salvando...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="h-4 w-4" />
+                Salvar Alterações
+              </>
+            )}
           </Button>
         </div>
       </div>
